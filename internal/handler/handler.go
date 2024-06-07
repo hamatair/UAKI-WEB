@@ -44,7 +44,7 @@ func (h *Handler) EndPoint() {
 	v1.GET("user/get-user", h.Middleware.AuthenticateUser, h.getLoginUser)
 	v1.POST("user/login", h.Login)
 
-	v1.GET("websocket",h.Middleware.AuthenticateUser, h.Websocket.ServeWS)
+	v1.GET("websocket", h.Websocket.ServeWS)
 
 	port := os.Getenv("PORT")
 	if port == "" {
