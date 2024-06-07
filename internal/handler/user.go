@@ -25,3 +25,21 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 
 	response.Success(c, http.StatusCreated, "success create new user", newUser)
 }
+
+func (h *Handler) Login(ctx *gin.Context) {
+	param := model.Login{}
+
+	err := ctx.ShouldBindJSON(&param)
+	if err != nil {
+		response.Error(ctx, http.StatusBadRequest, "failed to bind input", err)
+		return
+	}
+
+	token, err := h.Service.UserService.Login(param)
+	if err != nil {
+		response.Error(ctx, http.StatusInternalServerError, "failed to login", err)
+		return
+	}
+
+	response.Success(ctx, http.StatusOK, "success login", token)
+}

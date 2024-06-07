@@ -13,6 +13,7 @@ import (
 type UserServiceInterface interface {
 	RegisterUser(param model.RegisterUser) (entity.User, error)
 	GetUser(param model.UserParam) (entity.User, error)
+	Login(param model.Login) (model.LoginResponse, error)
 }
 
 type UserService struct {
@@ -55,4 +56,29 @@ func (u *UserService) RegisterUser(param model.RegisterUser) (entity.User, error
 	}
 
 	return newUser, err
+}
+
+func (u *UserService) Login(param model.Login) (model.LoginResponse, error) {
+	result := model.LoginResponse{}
+
+	nuser, err := u.userRepository.GetUser(model.UserParam{
+		Email: param.Email,
+	})
+	if err != nil {
+		return result, err
+	}
+
+	err = u.bcrypt.CompareAndHashPassword(nuser.Password, param.Password)
+	if err != nil {
+		return result, err
+	}
+
+	token, err := u.jwtAuth.CreateJWTToken(nuser.ID)
+	if err != nil {
+		return result, err
+	}
+
+	result.Token = token
+
+	return result, nil
 }

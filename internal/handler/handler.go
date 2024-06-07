@@ -11,20 +11,20 @@ import (
 )
 
 type Handler struct {
-	Service *service.Service
-	Router  *gin.Engine
+	Service    *service.Service
+	Router     *gin.Engine
 	Middleware middleware.Interface
 }
 
 func NewHandler(service *service.Service, middleware middleware.Interface) *Handler {
 	return &Handler{
-		Service: service,
-		Router:  gin.Default(),
+		Service:    service,
+		Router:     gin.Default(),
 		Middleware: middleware,
 	}
 }
 
-func (h *Handler) EndPoint(){
+func (h *Handler) EndPoint() {
 	h.Router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
@@ -32,12 +32,13 @@ func (h *Handler) EndPoint(){
 		ExposeHeaders:    []string{"*"},
 		AllowCredentials: true,
 	}))
-	
+
 	v1 := h.Router.Group("/v1")
 
 	v1.POST("user/register", h.RegisterUser)
-	v1.GET("user/get-user", )
-	
+	v1.GET("user/get-user")
+	v1.POST("user/login", h.Login)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
