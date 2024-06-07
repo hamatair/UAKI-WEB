@@ -9,6 +9,7 @@ import (
 	"UAKI-WEB/pkg/database"
 	"UAKI-WEB/pkg/jwt"
 	"UAKI-WEB/pkg/middleware"
+	"UAKI-WEB/pkg/websocket"
 )
 
 func main() {
@@ -30,7 +31,9 @@ func main() {
 
 	middleware := middleware.Init(jwtAuth,newService)
 
-	newHandler := handler.NewHandler(newService, middleware)
+	websocket := websocket.Init()
+
+	newHandler := handler.NewHandler(newService, middleware, websocket)
 
 	mysql.Migration(db)
 

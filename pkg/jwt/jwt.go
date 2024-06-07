@@ -1,14 +1,11 @@
 package jwt
 
 import (
-	"errors"
-	"UAKI-WEB/entity"
 	"log"
 	"os"
 	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
@@ -16,7 +13,6 @@ import (
 type Interface interface {
 	CreateJWTToken(userID uuid.UUID) (string, error)
 	ValidateToken(token string) (uuid.UUID, error)
-	GetLoginUser(c *gin.Context) (entity.User, error)
 }
 
 type jsonWebToken struct {
@@ -59,16 +55,6 @@ func (j *jsonWebToken) CreateJWTToken(userID uuid.UUID) (string, error) {
 	}
 
 	return tokenString, nil
-}
-
-// GetLoginUser implements Interface.
-func (*jsonWebToken) GetLoginUser(c *gin.Context) (entity.User, error) {
-	user, ok := c.Get("user")
-	if !ok {
-		return entity.User{}, errors.New("failed to get user")
-	}
-
-	return user.(entity.User), nil
 }
 
 // ValidateToken implements Interface.

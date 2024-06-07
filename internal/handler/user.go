@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"UAKI-WEB/entity"
 	"UAKI-WEB/model"
 	"UAKI-WEB/pkg/response"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,4 +44,14 @@ func (h *Handler) Login(ctx *gin.Context) {
 	}
 
 	response.Success(ctx, http.StatusOK, "success login", token)
+}
+
+func (h *Handler) getLoginUser(ctx *gin.Context) {
+	user, ok := ctx.Get("user")
+	if !ok {
+		response.Error(ctx, http.StatusInternalServerError, "failed get login user", errors.New(""))
+		return
+	}
+
+	response.Success(ctx, http.StatusOK, "get login user", user.(entity.User))
 }

@@ -39,8 +39,11 @@ func Init(jwtauth jwt.Interface, service *service.Service) Interface {
 func (m *Middleware) AuthenticateUser(c *gin.Context) {
 	bearer := c.GetHeader("Authorization")
 	if bearer == "" {
-		response.Error(c, http.StatusUnauthorized, "empty token", errors.New(""))
-		c.Abort()
+		bearer = c.Request.URL.Query().Get("token")
+		if bearer == "" {
+			response.Error(c, http.StatusUnauthorized, "empty token", errors.New(""))
+			c.Abort()
+		}
 	}
 
 	token := strings.Split(bearer, " ")[1]
